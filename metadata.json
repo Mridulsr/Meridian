@@ -1,0 +1,6 @@
+{
+  "name": "Meridian",
+  "description": "A simple personalized recommendation system driven by browsing history and past preferences across 50 years of movies, food, music, and 10 curated categories.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
