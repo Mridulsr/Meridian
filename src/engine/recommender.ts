@@ -502,9 +502,12 @@ export function searchWithRelated(
     const titleLower = item.title.toLowerCase();
     const franchiseLower = (item.franchise || '').toLowerCase();
     const creatorLower = item.creator.toLowerCase();
+    const castLower = (item.cast || []).join(' ').toLowerCase();
+    const languageLower = (item.language || '').toLowerCase();
+    const awardsLower = (item.awards || '').toLowerCase();
     const platformText = (item.platforms || []).join(' ').toLowerCase();
     const industryText = (item.industry || '').toLowerCase();
-    const fullText = `${titleLower} ${franchiseLower} ${creatorLower} ${item.tags.join(' ')} ${item.moods.join(' ')} ${platformText} ${industryText} ${item.origin.toLowerCase()} ${item.summary.toLowerCase()}`;
+    const fullText = `${titleLower} ${franchiseLower} ${creatorLower} ${castLower} ${languageLower} ${awardsLower} ${item.tags.join(' ')} ${item.moods.join(' ')} ${platformText} ${industryText} ${item.origin.toLowerCase()} ${item.summary.toLowerCase()}`;
 
     const allTokensMatch = tokens.every((tok) => fullText.includes(tok));
     if (!allTokensMatch) return;
@@ -513,8 +516,8 @@ export function searchWithRelated(
     if (titleLower.includes(q)) relevance += 10;
     if (franchiseLower && franchiseLower.includes(q)) relevance += 8;
     if (titleLower.startsWith(q)) relevance += 4;
-    if (creatorLower.includes(q)) relevance += 5;
-    if (platformText.includes(q) || industryText.includes(q)) relevance += 4;
+    if (creatorLower.includes(q) || castLower.includes(q)) relevance += 5;
+    if (platformText.includes(q) || industryText.includes(q) || languageLower.includes(q)) relevance += 4;
 
     directIds.add(item.id);
     directMatches.push({

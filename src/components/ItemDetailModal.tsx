@@ -4,6 +4,7 @@ import { CATEGORIES } from '../data/categoriesCatalog';
 import { FULL_CATALOG, getRelatedToItem } from '../engine/recommender';
 import { CatalogItem, CategoryId, UserTasteState } from '../types/catalog';
 import { PosterThumb } from './PosterThumb';
+import { ItemGallery } from './ItemGallery';
 
 const CATEGORY_LABELS: Record<CategoryId, string> = Object.fromEntries(
   CATEGORIES.map((c) => [c.id, c.label])
@@ -70,6 +71,12 @@ export function ItemDetailModal({
                 <span>{item.industry}</span>
               </>
             )}
+            {item.language && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{item.language}</span>
+              </>
+            )}
             <span aria-hidden="true">·</span>
             <span className="font-mono tabular-nums">{item.year}</span>
             <span aria-hidden="true">·</span>
@@ -98,6 +105,9 @@ export function ItemDetailModal({
             title={item.title}
             year={item.year}
             category={item.category}
+            creator={item.creator}
+            wikiPage={item.wikiPage}
+            imageQuery={item.imageQuery}
             className="w-28 sm:w-32 h-[168px] sm:h-[192px]"
           />
 
@@ -124,8 +134,15 @@ export function ItemDetailModal({
               )}
             </p>
 
-            {item.platforms && item.platforms.length > 0 && (
+            {item.cast && item.cast.length > 0 && (
               <p className="text-xs text-slate-600 dark:text-slate-300 mt-2">
+                <span className="font-medium text-slate-800 dark:text-slate-100">Starring: </span>
+                {item.cast.join(', ')}
+              </p>
+            )}
+
+            {item.platforms && item.platforms.length > 0 && (
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1.5">
                 <span className="font-medium text-slate-800 dark:text-slate-100">Where to watch: </span>
                 {item.platforms.join(' · ')}
               </p>
@@ -142,6 +159,12 @@ export function ItemDetailModal({
             <span className="font-medium text-slate-900 dark:text-slate-100">Why it stands out: </span>
             {item.whyNotable}
           </p>
+          {item.awards && (
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              <span className="font-medium text-slate-900 dark:text-slate-100">Recognition: </span>
+              {item.awards}
+            </p>
+          )}
           {reasons && reasons.length > 0 && (
             <p className="text-sm text-blue-800 dark:text-blue-400">
               <span className="font-medium">Why recommended: </span>
@@ -193,6 +216,11 @@ export function ItemDetailModal({
             <EyeOff className="w-4 h-4" />
             <span>Not for me</span>
           </button>
+        </div>
+
+        {/* Relevant Visual Gallery */}
+        <div className="mt-6">
+          <ItemGallery item={item} heading="Related Scenes, Cast & Visuals" maxImages={4} />
         </div>
 
         {/* Franchise / Sequels */}

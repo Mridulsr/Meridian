@@ -59,6 +59,11 @@ export interface CatalogItem {
   franchise?: string;
   platforms?: StreamingPlatform[];
   industry?: MovieIndustry;
+  cast?: string[];
+  language?: string;
+  awards?: string;
+  wikiPage?: string;
+  imageQuery?: string;
 }
 
 export type InteractionAction = 'view' | 'like' | 'save' | 'dislike';

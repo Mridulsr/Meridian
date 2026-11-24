@@ -4,9 +4,20 @@ import { MOVIES_50_YEARS } from '../data/movies50Years';
 import { getRecommendations, searchWithRelated } from '../engine/recommender';
 import { CatalogItem, Era, MovieIndustry, StreamingPlatform, UserTasteState } from '../types/catalog';
 import { ItemCard } from './ItemCard';
+import { FeaturedMatchBanner } from './FeaturedMatchBanner';
+import { PosterThumb } from './PosterThumb';
 
 type EraFilter = 'all' | Era | 'new-only';
 type SortMode = 'match' | 'rating' | 'newest' | 'chronological';
+type VisualPeriod = 'all-recent' | '2010-2014' | '2015-2019' | '2020-2023' | '2024-2026';
+
+const VISUAL_PERIOD_TABS: Array<{ id: VisualPeriod; label: string }> = [
+  { id: 'all-recent', label: 'All 2010–2026' },
+  { id: '2010-2014', label: '2010–2014' },
+  { id: '2015-2019', label: '2015–2019' },
+  { id: '2020-2023', label: '2020–2023' },
+  { id: '2024-2026', label: '2024–2026' },
+];
 
 interface MoviesArchiveViewProps {
   tasteState: UserTasteState;
@@ -59,6 +70,7 @@ export function MoviesArchiveView({
   const [selectedPlatform, setSelectedPlatform] = useState<'all' | StreamingPlatform>('all');
   const [selectedIndustry, setSelectedIndustry] = useState<'all' | MovieIndustry>('all');
   const [sortMode, setSortMode] = useState<SortMode>('match');
+  const [visualPeriod, setVisualPeriod] = useState<VisualPeriod>('all-recent');
   const [query, setQuery] = useState('');
 
   // Top personalized "Best in New" picks derived from 50-year history
@@ -69,6 +81,29 @@ export function MoviesArchiveView({
       limit: 3,
     });
   }, [tasteState]);
+
+  // Curated 2010–2026 Visual Gallery spanning the entire modern era
+  const recentVisualPicks = useMemo(() => {
+    const pool = MOVIES_50_YEARS.filter((m) => m.year >= 2010 && m.year <= 2026);
+    if (visualPeriod === '2010-2014') {
+      return pool.filter((m) => m.year >= 2010 && m.year <= 2014).slice(0, 6);
+    }
+    if (visualPeriod === '2015-2019') {
+      return pool.filter((m) => m.year >= 2015 && m.year <= 2019).slice(0, 6);
+    }
+    if (visualPeriod === '2020-2023') {
+      return pool.filter((m) => m.year >= 2020 && m.year <= 2023).slice(0, 6);
+    }
+    if (visualPeriod === '2024-2026') {
+      return pool.filter((m) => m.year >= 2024 && m.year <= 2026).slice(0, 6);
+    }
+    // Balanced spread across 2010–2026
+    const p1 = pool.filter((m) => m.year >= 2010 && m.year <= 2014).slice(0, 2);
+    const p2 = pool.filter((m) => m.year >= 2015 && m.year <= 2019).slice(0, 2);
+    const p3 = pool.filter((m) => m.year >= 2020 && m.year <= 2023).slice(0, 2);
+    const p4 = pool.filter((m) => m.year >= 2024 && m.year <= 2026).slice(0, 6);
+    return [...p1, ...p2, ...p3, ...p4];
+  }, [visualPeriod]);
 
   // Search-with-related mode when user types a query like "john wick"
   const searchResults = useMemo(() => {
@@ -195,6 +230,76 @@ export function MoviesArchiveView({
         </section>
       )}
 
+      {/* Visual Archive Strip: 2010–2026 */}
+      {!searchResults && (
+        <section
+          aria-labelledby="visual-2010-2026-heading"
+          className="pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <h2 id="visual-2010-2026-heading" className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                Cinema Visual Gallery (2010–2026)
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Explore official posters and scene galleries across every chapter from 2010 through 2026. Click any poster for full details &amp; visuals.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1 p-1 bg-slate-100 dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-lg w-fit">
+              {VISUAL_PERIOD_TABS.map((tab) => {
+                const active = visualPeriod === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setVisualPeriod(tab.id)}
+                    className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                      active
+                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+            {recentVisualPicks.map((movie) => (
+              <button
+                key={movie.id}
+                type="button"
+                onClick={() => onOpenItem(movie)}
+                className="group relative text-left rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 hover:border-blue-600 dark:hover:border-blue-500 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+              >
+                <PosterThumb
+                  id={movie.id}
+                  title={movie.title}
+                  year={movie.year}
+                  category={movie.category}
+                  creator={movie.creator}
+                  wikiPage={movie.wikiPage}
+                  imageQuery={movie.imageQuery}
+                  className="w-full aspect-[2/3] rounded-none border-0"
+                />
+                <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-slate-950/90 via-slate-950/55 to-transparent">
+                  <div className="text-[11px] font-mono tabular-nums text-slate-200">
+                    {movie.year}
+                    {movie.industry ? ` · ${movie.industry}` : ''}
+                  </div>
+                  <div className="text-xs font-semibold text-white leading-snug line-clamp-2 mt-0.5 group-hover:text-blue-300 transition-colors">
+                    {movie.title}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Search & Filters */}
       <section className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
         {/* Era Tabs */}
@@ -257,7 +362,7 @@ export function MoviesArchiveView({
             </div>
             <div className="text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center gap-2">
               <span>Quick try:</span>
-              {['John Wick', 'Bollywood', 'Kill', 'Andhadhun', 'The Matrix'].map((sample) => (
+              {['John Wick', 'F1', 'Stree 2', 'Kalki 2898 AD', 'Kill', 'Bollywood'].map((sample) => (
                 <button
                   key={sample}
                   type="button"
@@ -322,67 +427,85 @@ export function MoviesArchiveView({
         </div>
 
         {/* Search Results: Direct / Series Matches + 10+ Related Movies */}
-        {searchResults ? (
-          <div className="space-y-8 pt-2">
-            <div>
-              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Matches for &ldquo;{query.trim()}&rdquo;{' '}
-                <span className="font-mono tabular-nums text-slate-400 dark:text-slate-500 font-normal">
-                  ({applySearchFilters(searchResults.directMatches).length})
-                </span>
-              </h2>
-              {applySearchFilters(searchResults.directMatches).length === 0 ? (
-                <p className="text-sm text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6">
-                  No exact title match for &ldquo;{query.trim()}&rdquo; with current platform/industry filters — showing related recommendations below.
-                </p>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {applySearchFilters(searchResults.directMatches).map(({ item, matchPercent, reasons }) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      matchPercent={matchPercent}
-                      reasons={reasons}
-                      isLiked={tasteState.likedIds.includes(item.id)}
-                      isSaved={tasteState.savedIds.includes(item.id)}
-                      onOpen={onOpenItem}
-                      onToggleLike={onToggleLike}
-                      onToggleSave={onToggleSave}
-                      onDislike={onDislike}
-                    />
-                  ))}
+        {searchResults ? (() => {
+          const filteredDirect = applySearchFilters(searchResults.directMatches);
+          const filteredRelated = applySearchFilters(searchResults.relatedMatches);
+          const topMatch = filteredDirect[0];
+
+          return (
+            <div className="space-y-8 pt-2">
+              {topMatch && (
+                <FeaturedMatchBanner
+                  item={topMatch.item}
+                  matchPercent={topMatch.matchPercent}
+                  isLiked={tasteState.likedIds.includes(topMatch.item.id)}
+                  isSaved={tasteState.savedIds.includes(topMatch.item.id)}
+                  onOpen={onOpenItem}
+                  onToggleLike={onToggleLike}
+                  onToggleSave={onToggleSave}
+                />
+              )}
+
+              <div>
+                <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                  Matches for &ldquo;{query.trim()}&rdquo;{' '}
+                  <span className="font-mono tabular-nums text-slate-400 dark:text-slate-500 font-normal">
+                    ({filteredDirect.length})
+                  </span>
+                </h2>
+                {filteredDirect.length === 0 ? (
+                  <p className="text-sm text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6">
+                    No exact title match for &ldquo;{query.trim()}&rdquo; with current platform/industry filters — showing related recommendations below.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredDirect.map(({ item, matchPercent, reasons }) => (
+                      <ItemCard
+                        key={item.id}
+                        item={item}
+                        matchPercent={matchPercent}
+                        reasons={reasons}
+                        isLiked={tasteState.likedIds.includes(item.id)}
+                        isSaved={tasteState.savedIds.includes(item.id)}
+                        onOpen={onOpenItem}
+                        onToggleLike={onToggleLike}
+                        onToggleSave={onToggleSave}
+                        onDislike={onDislike}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {filteredRelated.length > 0 && (
+                <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-1">
+                    10+ Related Movies Like &ldquo;{query.trim()}&rdquo;
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                    Closely matched across Hollywood, Bollywood, Netflix, Prime Video, ZEE5, and SonyLIV.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredRelated.map(({ item, matchPercent, reasons }) => (
+                      <ItemCard
+                        key={item.id}
+                        item={item}
+                        matchPercent={matchPercent}
+                        reasons={reasons}
+                        isLiked={tasteState.likedIds.includes(item.id)}
+                        isSaved={tasteState.savedIds.includes(item.id)}
+                        onOpen={onOpenItem}
+                        onToggleLike={onToggleLike}
+                        onToggleSave={onToggleSave}
+                        onDislike={onDislike}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
-
-            {applySearchFilters(searchResults.relatedMatches).length > 0 && (
-              <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
-                <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-1">
-                  10+ Related Movies Like &ldquo;{query.trim()}&rdquo;
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                  Closely matched across Hollywood, Bollywood, Netflix, Prime Video, ZEE5, and SonyLIV.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {applySearchFilters(searchResults.relatedMatches).map(({ item, matchPercent, reasons }) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      matchPercent={matchPercent}
-                      reasons={reasons}
-                      isLiked={tasteState.likedIds.includes(item.id)}
-                      isSaved={tasteState.savedIds.includes(item.id)}
-                      onOpen={onOpenItem}
-                      onToggleLike={onToggleLike}
-                      onToggleSave={onToggleSave}
-                      onDislike={onDislike}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : filteredMovies.length === 0 ? (
+          );
+        })() : filteredMovies.length === 0 ? (
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-10 text-center">
             <p className="text-sm font-medium text-slate-900 dark:text-slate-100">No films match these filters.</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">

@@ -70,6 +70,9 @@ export function ItemCard({
               title={item.title}
               year={item.year}
               category={item.category}
+              creator={item.creator}
+              wikiPage={item.wikiPage}
+              imageQuery={item.imageQuery}
               className="w-20 h-[120px]"
             />
           </button>

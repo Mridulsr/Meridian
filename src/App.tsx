@@ -13,6 +13,7 @@ import {
 } from './engine/recommender';
 import { CatalogItem, CategoryId, SampleProfile, UserTasteState } from './types/catalog';
 import { ItemCard } from './components/ItemCard';
+import { FeaturedMatchBanner } from './components/FeaturedMatchBanner';
 import { ItemDetailModal } from './components/ItemDetailModal';
 import { TasteSetupModal, ThemeMode } from './components/TasteSetupModal';
 import { MoviesArchiveView } from './components/MoviesArchiveView';
@@ -501,7 +502,7 @@ export default function App() {
                 </div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center gap-2">
                   <span>Try:</span>
-                  {['John Wick', 'Bollywood', 'Netflix', 'Prime Video', 'ZEE5', 'SonyLIV'].map((term) => (
+                  {['John Wick', 'F1', 'Stree 2', 'Kalki 2898 AD', 'Bollywood', 'Netflix', 'ZEE5', 'SonyLIV'].map((term) => (
                     <button
                       key={term}
                       type="button"
@@ -524,9 +525,21 @@ export default function App() {
               </div>
             </section>
 
-            {/* When searching: Direct / Franchise Matches + 10+ Related Picks */}
+            {/* When searching: Featured Top Match Details + Franchise Matches + 10+ Related Picks */}
             {homeSearchResults ? (
               <div className="space-y-10">
+                {homeSearchResults.directMatches[0] && (
+                  <FeaturedMatchBanner
+                    item={homeSearchResults.directMatches[0].item}
+                    matchPercent={homeSearchResults.directMatches[0].matchPercent}
+                    isLiked={tasteState.likedIds.includes(homeSearchResults.directMatches[0].item.id)}
+                    isSaved={tasteState.savedIds.includes(homeSearchResults.directMatches[0].item.id)}
+                    onOpen={handleOpenItem}
+                    onToggleLike={handleToggleLike}
+                    onToggleSave={handleToggleSave}
+                  />
+                )}
+
                 <section aria-labelledby="search-direct-matches">
                   <div className="flex items-baseline justify-between gap-4 mb-4">
                     <div>

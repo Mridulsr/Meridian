@@ -10,6 +10,9 @@ interface PosterThumbProps {
   title: string;
   year: number;
   category: CategoryId;
+  creator?: string;
+  wikiPage?: string;
+  imageQuery?: string;
   className?: string;
 }
 
@@ -39,8 +42,17 @@ function CategoryGlyph({ category }: { category: CategoryId }) {
   }
 }
 
-export function PosterThumb({ id, title, year, category, className = '' }: PosterThumbProps) {
-  const cacheKey = `${id}::${title}::${year}`;
+export function PosterThumb({
+  id,
+  title,
+  year,
+  category,
+  creator = '',
+  wikiPage = '',
+  imageQuery = '',
+  className = '',
+}: PosterThumbProps) {
+  const cacheKey = `${id}::${title}::${year}::${wikiPage}::${imageQuery}`;
   const [posterUrl, setPosterUrl] = useState<string | null | undefined>(() =>
     clientPosterCache.has(cacheKey) ? clientPosterCache.get(cacheKey) : undefined
   );
@@ -59,6 +71,9 @@ export function PosterThumb({ id, title, year, category, className = '' }: Poste
       year: String(year),
       category,
     });
+    if (creator) params.set('creator', creator);
+    if (wikiPage) params.set('wikiPage', wikiPage);
+    if (imageQuery) params.set('imageQuery', imageQuery);
 
     fetch(`/api/poster?${params.toString()}`)
       .then((res) => (res.ok ? res.json() : { posterUrl: null }))
@@ -79,7 +94,7 @@ export function PosterThumb({ id, title, year, category, className = '' }: Poste
     return () => {
       cancelled = true;
     };
-  }, [cacheKey, title, year, category]);
+  }, [cacheKey, title, year, category, creator, wikiPage, imageQuery]);
 
   const showImage = Boolean(posterUrl) && !imgFailed;
 

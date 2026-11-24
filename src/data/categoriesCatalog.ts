@@ -63,7 +63,7 @@ export const CATEGORIES: CategoryMeta[] = [
   },
 ];
 
-export const OTHER_CATEGORIES_ITEMS: CatalogItem[] = [
+const RAW_OTHER_CATEGORIES_ITEMS: CatalogItem[] = [
   // MUSIC (13 items)
   {
     id: 'mus-kind-of-blue',
@@ -1682,5 +1682,99 @@ export const OTHER_CATEGORIES_ITEMS: CatalogItem[] = [
     whyNotable: '2025–2026 return to clarity, craft, and distraction-free editorial systems.',
   },
 ];
+
+const CATEGORY_IMAGE_HINTS: Record<string, { wikiPage?: string; imageQuery?: string }> = {
+  // Music (2010–2026)
+  'mus-tpab': { wikiPage: 'To Pimp a Butterfly', imageQuery: 'Kendrick Lamar live concert' },
+  'mus-blonde': { wikiPage: 'Blonde (Frank Ocean album)', imageQuery: 'Frank Ocean concert' },
+  'mus-jubilee': { wikiPage: 'Jubilee (Japanese Breakfast album)', imageQuery: 'Japanese Breakfast Michelle Zauner' },
+  'mus-brat-2024': { wikiPage: 'Brat (album)', imageQuery: 'Charli XCX concert' },
+  'mus-romance-2024': { wikiPage: 'Romance (Fontaines D.C. album)', imageQuery: 'Fontaines D.C. concert' },
+  'mus-night-reign-2024': { wikiPage: 'Night Reign', imageQuery: 'Arooj Aftab concert' },
+  'mus-sable-fable-2025': { wikiPage: 'Sable, Fable', imageQuery: 'Bon Iver live concert' },
+
+  // Food & Dining (2010–2026)
+  'food-tonkotsu-ramen': { imageQuery: 'Tonkotsu ramen Fukuoka' },
+  'food-neapolitan-pizza': { imageQuery: 'Pizza Margherita Napoletana' },
+  'food-mole-negro': { imageQuery: 'Mole negro Oaxaca' },
+  'food-mapo-tofu': { imageQuery: 'Mapo tofu Sichuan' },
+  'food-kyoto-kaiseki': { imageQuery: 'Kaiseki Kyoto meal' },
+  'food-ceviche-nikkei': { imageQuery: 'Ceviche Peru' },
+  'food-sourdough-ferment': { imageQuery: 'Sourdough bread boule' },
+  'food-korean-bbq': { imageQuery: 'Korean barbeque Galbi' },
+  'food-basque-cheesecake': { imageQuery: 'La Viña Basque cheesecake' },
+  'food-nordic-ferment-2024': { imageQuery: 'Noma Copenhagen Nordic cuisine' },
+  'food-fire-mezze-2025': { imageQuery: 'Mezze platter hummus flatbread' },
+  'food-tokyo-izakaya-2025': { imageQuery: 'Yakitori izakaya Tokyo' },
+
+  // TV Series (2010–2026)
+  'ser-true-detective-s1': { wikiPage: 'True Detective', imageQuery: 'Matthew McConaughey Woody Harrelson True Detective' },
+  'ser-dark': { wikiPage: 'Dark (TV series)', imageQuery: 'Louis Hofmann Dark Netflix' },
+  'ser-succession': { wikiPage: 'Succession (TV series)', imageQuery: 'Brian Cox Kieran Culkin Succession' },
+  'ser-severance': { wikiPage: 'Severance (TV series)', imageQuery: 'Adam Scott Ben Stiller Severance' },
+  'ser-the-bear': { wikiPage: 'The Bear (TV series)', imageQuery: 'Jeremy Allen White Ayo Edebiri' },
+  'ser-shogun-2024': { wikiPage: 'Shōgun (2024 TV series)', imageQuery: 'Hiroyuki Sanada Anna Sawai' },
+  'ser-ripley-2024': { wikiPage: 'Ripley (TV series)', imageQuery: 'Andrew Scott Atrani Amalfi Coast' },
+  'ser-adolescence-2025': { wikiPage: 'Adolescence (TV series)', imageQuery: 'Stephen Graham Jack Thorne' },
+  'ser-pitt-2025': { wikiPage: 'The Pitt', imageQuery: 'Noah Wyle Pittsburgh emergency' },
+
+  // Podcasts (2010–2026)
+  'pod-99pi': { imageQuery: '99% Invisible' },
+  'pod-song-exploder': { imageQuery: 'Song Exploder' },
+  'pod-acquired': { imageQuery: 'Acquired podcast' },
+  'pod-rest-is-history': { imageQuery: 'The Rest Is History' },
+  'pod-blank-check': { imageQuery: 'Blank Check with Griffin and David' },
+  'pod-heavyweight': { imageQuery: 'Heavyweight Gimlet' },
+  'pod-search-engine': { imageQuery: 'Search Engine PJ Vogt' },
+  'pod-gastropod': { imageQuery: 'Gastropod podcast' },
+
+  // Games (2010–2026)
+  'gam-portal-2': { wikiPage: 'Portal 2', imageQuery: 'Valve Portal 2' },
+  'gam-witcher-3': { wikiPage: 'The Witcher 3: Wild Hunt', imageQuery: 'CD Projekt Red Witcher' },
+  'gam-hollow-knight': { wikiPage: 'Hollow Knight', imageQuery: 'Team Cherry Hollow Knight' },
+  'gam-outer-wilds': { wikiPage: 'Outer Wilds', imageQuery: 'Outer Wilds Mobius Digital' },
+  'gam-disco-elysium': { wikiPage: 'Disco Elysium', imageQuery: 'Disco Elysium art' },
+  'gam-balatro-2024': { wikiPage: 'Balatro (video game)', imageQuery: 'Playing cards poker deck' },
+  'gam-astro-bot-2024': { wikiPage: 'Astro Bot', imageQuery: 'Team Asobi PlayStation' },
+  'gam-hades-2-2025': { wikiPage: 'Hades II', imageQuery: 'Supergiant Games Hades' },
+  'gam-expedition-33-2025': { wikiPage: 'Clair Obscur: Expedition 33', imageQuery: 'Belle Epoque Paris architecture' },
+  'gam-blue-prince-2025': { wikiPage: 'Blue Prince', imageQuery: 'Architectural blueprint manor' },
+
+  // Travel & Places (2023–2025)
+  'trv-kyoto-machiya': { imageQuery: 'Kyoto Zen garden Ryōan-ji' },
+  'trv-lisbon-coast': { imageQuery: 'Alfama Lisbon Portugal' },
+  'trv-cdmx-roma': { imageQuery: 'Coyoacán Mexico City' },
+  'trv-dolomites': { imageQuery: 'Dolomites South Tyrol Italy' },
+  'trv-copenhagen': { imageQuery: 'Nyhavn Copenhagen Denmark' },
+  'trv-naoshima': { imageQuery: 'Naoshima art island Japan' },
+  'trv-oaxaca': { imageQuery: 'Oaxaca market Mexico' },
+  'trv-seoul-euljiro': { imageQuery: 'Bukchon Hanok Village Seoul' },
+  'trv-iceland-highlands': { imageQuery: 'Landmannalaugar Iceland' },
+  'trv-scottish-highlands': { imageQuery: 'Quiraing Isle of Skye Scotland' },
+
+  // Documentaries (2010–2026)
+  'doc-jiro-sushi': { wikiPage: 'Jiro Dreams of Sushi', imageQuery: 'Sukiyabashi Jiro sushi Tokyo' },
+  'doc-free-solo': { wikiPage: 'Free Solo', imageQuery: 'El Capitan Yosemite Alex Honnold' },
+  'doc-summer-of-soul': { wikiPage: 'Summer of Soul', imageQuery: 'Harlem Cultural Festival Questlove' },
+  'doc-fire-of-love': { wikiPage: 'Fire of Love (2022 film)', imageQuery: 'Katia and Maurice Krafft volcano' },
+  'doc-soundtrack-coup-2024': { wikiPage: "Soundtrack to a Coup d'Etat", imageQuery: 'Abbey Lincoln Max Roach jazz' },
+  'doc-no-other-land-2024': { wikiPage: 'No Other Land', imageQuery: 'Berlinale 2024 No Other Land' },
+  'doc-sugarcane-2024': { wikiPage: 'Sugarcane (film)', imageQuery: 'Sundance Film Festival 2024' },
+  'doc-porcelain-war-2024': { wikiPage: 'Porcelain War', imageQuery: 'Kharkiv Ukraine porcelain art' },
+
+  // Art & Design (2024–2025)
+  'des-teamlab-2024': { imageQuery: 'TeamLab Borderless Azabudai Hills' },
+  'des-tactile-web-2025': { imageQuery: 'Swiss typography poster' },
+};
+
+export const OTHER_CATEGORIES_ITEMS: CatalogItem[] = RAW_OTHER_CATEGORIES_ITEMS.map((item) => {
+  const hints = CATEGORY_IMAGE_HINTS[item.id];
+  if (!hints) return item;
+  return {
+    ...item,
+    wikiPage: item.wikiPage ?? hints.wikiPage,
+    imageQuery: item.imageQuery ?? hints.imageQuery,
+  };
+});
 
 export const ALL_CATALOG_ITEMS_BASE: CatalogItem[] = [...OTHER_CATEGORIES_ITEMS];
