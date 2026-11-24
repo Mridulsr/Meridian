@@ -63,6 +63,7 @@ export default function App() {
 
   // For You search
   const [homeQuery, setHomeQuery] = useState('');
+  const [homeSearchVisible, setHomeSearchVisible] = useState(36);
   const [spotlightCategory, setSpotlightCategory] = useState<CategoryId>('food');
 
   // Sync theme to <html class="dark"> and localStorage
@@ -453,6 +454,7 @@ export default function App() {
               <div className="max-w-2xl">
                 <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                   Personalized Discovery ·{' '}
+                  <span className="font-mono tabular-nums">{FULL_CATALOG.length.toLocaleString()}</span> Items ·{' '}
                   <span className="font-mono tabular-nums">{CATEGORIES.length}</span> Categories ·{' '}
                   Netflix · Prime Video · ZEE5 · SonyLIV · Bollywood
                 </p>
@@ -495,18 +497,24 @@ export default function App() {
                   <input
                     type="text"
                     value={homeQuery}
-                    onChange={(e) => setHomeQuery(e.target.value)}
-                    placeholder="Enter a movie (e.g. John Wick), Bollywood, Netflix, ZEE5..."
+                    onChange={(e) => {
+                      setHomeQuery(e.target.value);
+                      setHomeSearchVisible(36);
+                    }}
+                    placeholder={`Search ${FULL_CATALOG.length.toLocaleString()} items (John Wick, Biryani, Panchayat, Radiohead...)`}
                     className="w-full pl-10 pr-3.5 py-2.5 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
                   />
                 </div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center gap-2">
                   <span>Try:</span>
-                  {['John Wick', 'F1', 'Stree 2', 'Kalki 2898 AD', 'Bollywood', 'Netflix', 'ZEE5', 'SonyLIV'].map((term) => (
+                  {['John Wick', 'Stree 2', 'Panchayat', 'Biryani', 'Radiohead', 'Elden Ring', 'Bollywood', 'Netflix'].map((term) => (
                     <button
                       key={term}
                       type="button"
-                      onClick={() => setHomeQuery(term)}
+                      onClick={() => {
+                        setHomeQuery(term);
+                        setHomeSearchVisible(36);
+                      }}
                       className="text-blue-700 dark:text-blue-400 hover:underline cursor-pointer"
                     >
                       {term}
@@ -515,7 +523,10 @@ export default function App() {
                   {homeQuery && (
                     <button
                       type="button"
-                      onClick={() => setHomeQuery('')}
+                      onClick={() => {
+                        setHomeQuery('');
+                        setHomeSearchVisible(36);
+                      }}
                       className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 underline cursor-pointer ml-1"
                     >
                       Clear
@@ -567,22 +578,44 @@ export default function App() {
                       No exact title match for &ldquo;{homeQuery.trim()}&rdquo; — here are closely related recommendations below.
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {homeSearchResults.directMatches.map(({ item, matchPercent, reasons }) => (
-                        <ItemCard
-                          key={item.id}
-                          item={item}
-                          matchPercent={matchPercent}
-                          reasons={reasons}
-                          isLiked={tasteState.likedIds.includes(item.id)}
-                          isSaved={tasteState.savedIds.includes(item.id)}
-                          onOpen={handleOpenItem}
-                          onToggleLike={handleToggleLike}
-                          onToggleSave={handleToggleSave}
-                          onDislike={handleDislike}
-                        />
-                      ))}
-                    </div>
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {homeSearchResults.directMatches
+                          .slice(0, homeSearchVisible)
+                          .map(({ item, matchPercent, reasons }) => (
+                            <ItemCard
+                              key={item.id}
+                              item={item}
+                              matchPercent={matchPercent}
+                              reasons={reasons}
+                              isLiked={tasteState.likedIds.includes(item.id)}
+                              isSaved={tasteState.savedIds.includes(item.id)}
+                              onOpen={handleOpenItem}
+                              onToggleLike={handleToggleLike}
+                              onToggleSave={handleToggleSave}
+                              onDislike={handleDislike}
+                            />
+                          ))}
+                      </div>
+                      {homeSearchResults.directMatches.length > homeSearchVisible && (
+                        <div className="mt-5 flex items-center justify-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setHomeSearchVisible((v) => v + 36)}
+                            className="px-4 py-2 text-xs font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer"
+                          >
+                            Load 36 More ({homeSearchResults.directMatches.length - homeSearchVisible} remaining)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setHomeSearchVisible(homeSearchResults.directMatches.length)}
+                            className="px-4 py-2 text-xs font-medium text-blue-700 dark:text-blue-400 hover:underline cursor-pointer"
+                          >
+                            Show All {homeSearchResults.directMatches.length}
+                          </button>
+                        </div>
+                      )}
+                    </>
                   )}
                 </section>
 

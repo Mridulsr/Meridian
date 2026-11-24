@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { MOVIES_50_YEARS } from '../data/movies50Years';
 import { getRecommendations, searchWithRelated } from '../engine/recommender';
@@ -6,6 +6,8 @@ import { CatalogItem, Era, MovieIndustry, StreamingPlatform, UserTasteState } fr
 import { ItemCard } from './ItemCard';
 import { FeaturedMatchBanner } from './FeaturedMatchBanner';
 import { PosterThumb } from './PosterThumb';
+
+const PAGE_SIZE = 36;
 
 type EraFilter = 'all' | Era | 'new-only';
 type SortMode = 'match' | 'rating' | 'newest' | 'chronological';
@@ -72,6 +74,11 @@ export function MoviesArchiveView({
   const [sortMode, setSortMode] = useState<SortMode>('match');
   const [visualPeriod, setVisualPeriod] = useState<VisualPeriod>('all-recent');
   const [query, setQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [eraFilter, selectedGenre, selectedPlatform, selectedIndustry, sortMode, query]);
 
   // Top personalized "Best in New" picks derived from 50-year history
   const bestNewMatches = useMemo(() => {
@@ -458,21 +465,34 @@ export function MoviesArchiveView({
                     No exact title match for &ldquo;{query.trim()}&rdquo; with current platform/industry filters — showing related recommendations below.
                   </p>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredDirect.map(({ item, matchPercent, reasons }) => (
-                      <ItemCard
-                        key={item.id}
-                        item={item}
-                        matchPercent={matchPercent}
-                        reasons={reasons}
-                        isLiked={tasteState.likedIds.includes(item.id)}
-                        isSaved={tasteState.savedIds.includes(item.id)}
-                        onOpen={onOpenItem}
-                        onToggleLike={onToggleLike}
-                        onToggleSave={onToggleSave}
-                        onDislike={onDislike}
-                      />
-                    ))}
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredDirect.slice(0, visibleCount).map(({ item, matchPercent, reasons }) => (
+                        <ItemCard
+                          key={item.id}
+                          item={item}
+                          matchPercent={matchPercent}
+                          reasons={reasons}
+                          isLiked={tasteState.likedIds.includes(item.id)}
+                          isSaved={tasteState.savedIds.includes(item.id)}
+                          onOpen={onOpenItem}
+                          onToggleLike={onToggleLike}
+                          onToggleSave={onToggleSave}
+                          onDislike={onDislike}
+                        />
+                      ))}
+                    </div>
+                    {filteredDirect.length > visibleCount && (
+                      <div className="flex items-center justify-center pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                          className="px-4 py-2 text-xs font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors cursor-pointer"
+                        >
+                          Load {Math.min(PAGE_SIZE, filteredDirect.length - visibleCount)} More Matches
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -526,21 +546,58 @@ export function MoviesArchiveView({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredMovies.map(({ item, matchPercent, reasons }) => (
-              <ItemCard
-                key={item.id}
-                item={item}
-                matchPercent={matchPercent}
-                reasons={reasons}
-                isLiked={tasteState.likedIds.includes(item.id)}
-                isSaved={tasteState.savedIds.includes(item.id)}
-                onOpen={onOpenItem}
-                onToggleLike={onToggleLike}
-                onToggleSave={onToggleSave}
-                onDislike={onDislike}
-              />
-            ))}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span>
+                Showing{' '}
+                <span className="font-mono tabular-nums font-semibold text-slate-800 dark:text-slate-200">
+                  {Math.min(visibleCount, filteredMovies.length)}
+                </span>{' '}
+                of{' '}
+                <span className="font-mono tabular-nums font-semibold text-slate-800 dark:text-slate-200">
+                  {filteredMovies.length}
+                </span>{' '}
+                films
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredMovies.slice(0, visibleCount).map(({ item, matchPercent, reasons }) => (
+                <ItemCard
+                  key={item.id}
+                  item={item}
+                  matchPercent={matchPercent}
+                  reasons={reasons}
+                  isLiked={tasteState.likedIds.includes(item.id)}
+                  isSaved={tasteState.savedIds.includes(item.id)}
+                  onOpen={onOpenItem}
+                  onToggleLike={onToggleLike}
+                  onToggleSave={onToggleSave}
+                  onDislike={onDislike}
+                />
+              ))}
+            </div>
+
+            {filteredMovies.length > visibleCount && (
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                  className="px-4 py-2 text-xs font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors cursor-pointer"
+                >
+                  Load {Math.min(PAGE_SIZE, filteredMovies.length - visibleCount)} More ({filteredMovies.length - visibleCount} remaining)
+                </button>
+                {filteredMovies.length - visibleCount <= 150 && (
+                  <button
+                    type="button"
+                    onClick={() => setVisibleCount(filteredMovies.length)}
+                    className="px-4 py-2 text-xs font-medium bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-lg hover:border-slate-300 dark:hover:border-slate-700 transition-colors cursor-pointer"
+                  >
+                    Show All ({filteredMovies.length})
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </section>

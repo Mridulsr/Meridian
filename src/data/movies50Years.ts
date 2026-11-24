@@ -1,4 +1,5 @@
 import { CatalogItem, Era, MovieIndustry, StreamingPlatform } from '../types/catalog';
+import { EXPANDED_MOVIES } from './moviesExpanded';
 
 function eraFromYear(year: number): Era {
   if (year < 1980) return '1970s';
@@ -2218,7 +2219,7 @@ const MOVIE_EXTRA_DETAILS: Record<
   },
 };
 
-export const MOVIES_50_YEARS: CatalogItem[] = RAW_MOVIES.map((movie) => {
+const BASE_MOVIES_50_YEARS: CatalogItem[] = RAW_MOVIES.map((movie) => {
   const extra = MOVIE_EXTRA_DETAILS[movie.id];
   return {
     ...movie,
@@ -2234,3 +2235,13 @@ export const MOVIES_50_YEARS: CatalogItem[] = RAW_MOVIES.map((movie) => {
     imageQuery: movie.imageQuery ?? extra?.imageQuery,
   };
 });
+
+const seenMovieIds = new Set(BASE_MOVIES_50_YEARS.map((m) => m.id));
+export const MOVIES_50_YEARS: CatalogItem[] = [
+  ...BASE_MOVIES_50_YEARS,
+  ...EXPANDED_MOVIES.filter((m) => {
+    if (seenMovieIds.has(m.id)) return false;
+    seenMovieIds.add(m.id);
+    return true;
+  }),
+];

@@ -1,4 +1,8 @@
 import { CatalogItem, CategoryMeta } from '../types/catalog';
+import { EXPANDED_MUSIC_AND_FOOD } from './categoriesExpandedMusicFood';
+import { EXPANDED_BOOKS_AND_SERIES } from './categoriesExpandedBooksSeries';
+import { EXPANDED_PODCASTS_AND_GAMES } from './categoriesExpandedPodcastsGames';
+import { EXPANDED_TRAVEL_DOCS_DESIGN } from './categoriesExpandedTravelDocsDesign';
 
 export const CATEGORIES: CategoryMeta[] = [
   {
@@ -1767,7 +1771,7 @@ const CATEGORY_IMAGE_HINTS: Record<string, { wikiPage?: string; imageQuery?: str
   'des-tactile-web-2025': { imageQuery: 'Swiss typography poster' },
 };
 
-export const OTHER_CATEGORIES_ITEMS: CatalogItem[] = RAW_OTHER_CATEGORIES_ITEMS.map((item) => {
+const BASE_OTHER_ITEMS: CatalogItem[] = RAW_OTHER_CATEGORIES_ITEMS.map((item) => {
   const hints = CATEGORY_IMAGE_HINTS[item.id];
   if (!hints) return item;
   return {
@@ -1775,6 +1779,19 @@ export const OTHER_CATEGORIES_ITEMS: CatalogItem[] = RAW_OTHER_CATEGORIES_ITEMS.
     wikiPage: item.wikiPage ?? hints.wikiPage,
     imageQuery: item.imageQuery ?? hints.imageQuery,
   };
+});
+
+const seenCategoryIds = new Set<string>();
+export const OTHER_CATEGORIES_ITEMS: CatalogItem[] = [
+  ...BASE_OTHER_ITEMS,
+  ...EXPANDED_MUSIC_AND_FOOD,
+  ...EXPANDED_BOOKS_AND_SERIES,
+  ...EXPANDED_PODCASTS_AND_GAMES,
+  ...EXPANDED_TRAVEL_DOCS_DESIGN,
+].filter((item) => {
+  if (seenCategoryIds.has(item.id)) return false;
+  seenCategoryIds.add(item.id);
+  return true;
 });
 
 export const ALL_CATALOG_ITEMS_BASE: CatalogItem[] = [...OTHER_CATEGORIES_ITEMS];

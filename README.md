@@ -4,9 +4,9 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-7.0-3178c6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4.21-0f172a?style=flat-square&logo=express&logoColor=white)
-![Catalog](https://img.shields.io/badge/Catalog-220_Items_%C2%B7_10_Categories-2563eb?style=flat-square)
+![Catalog](https://img.shields.io/badge/Catalog-1%2C156_Items_%C2%B7_10_Categories-2563eb?style=flat-square)
 
-**Meridian** is a full-stack, responsive recommendation engine and media discovery platform driven by **user browsing history, explicit preferences, and cross-category taste transfer**. It pairs a **50-year cinema archive (`1976–2026`)**—connecting timeless classics to **43 standout `2024–2026` new releases**—with **10 curated lifestyle and culture categories**, **franchise-aware search with rich top-match details**, **Bollywood, Hollywood & Regional cinema**, **streaming platform filtering**, **live cached movie posters**, and **Light / Dark / System themes**.
+**Meridian** is a full-stack, responsive recommendation engine and media discovery platform driven by **user browsing history, explicit preferences, and cross-category taste transfer**. It pairs a **50-year cinema archive (`1976–2026`, 539 films)**—connecting timeless classics to **126 standout `2024–2026` new releases**—with **1,156 searchable items across 10 curated lifestyle and culture categories**, **franchise-aware search with rich top-match details**, **Bollywood, Hollywood & Regional cinema**, **streaming platform filtering**, **live cached posters**, and **Light / Dark / System themes**.
 
 ---
 
@@ -15,7 +15,7 @@
 - [Key Capabilities](#key-capabilities)
 - [System Architecture](#system-architecture)
 - [Recommendation Engine Methodology](#recommendation-engine-methodology)
-- [Catalog Coverage (220 Curated Items)](#catalog-coverage-220-curated-items)
+- [Catalog Coverage (1,156 Curated Items)](#catalog-coverage-1156-curated-items)
   - [50 Years of Cinema (`1976–2026`)](#50-years-of-cinema-19762026)
   - [All 10 Categories](#all-10-categories)
   - [Streaming Platforms & Industries](#streaming-platforms--industries)
@@ -32,7 +32,7 @@
 ## Key Capabilities
 
 - **Real-Time Browsing History Personalization**: Every item you **Explore** (view), **Like**, **Save**, or **Hide** immediately recalculates your preference vector across tags, moods, creators, eras, and categories.
-- **50 Years of Cinema + Best in New (`1976–2026`)**: Dedicated **120-film** cinema vault covering every decade from the 1970s to 2026, with a personalized **Best in New Cinema (`2024–2026`)** spotlight informed by your classic and past-era favorites.
+- **50 Years of Cinema + Best in New (`1976–2026`)**: Dedicated **539-film** cinema vault covering every decade from the 1970s to 2026, with a personalized **Best in New Cinema (`2024–2026`)** spotlight informed by your classic and past-era favorites and **380 films from `2010–2026`**.
 - **Franchise-Aware Search + Rich Top-Match Details + 10+ Related Picks**: Searching any title, franchise, director, cast member, platform, or industry (e.g., `John Wick`, `F1`, `Stree 2`, `Kalki 2898 AD`, `Bollywood`, `Kill`, `ZEE5`, `Netflix`) opens a full **Top Match Details** banner (poster, starring cast, language, streaming platforms, unclipped synopsis, recognition/awards, and themes) followed by chronological series installments (`1, 2, 3, 4` + spin-offs) and **10+ related recommendations**.
 - **Cross-Category Taste Transfer**: Preferences learned in one domain flow naturally into others—for example, engaging with atmospheric sci-fi or Japanese cinema elevates synthwave scores, ramen/kaiseki dining, speculative novels, and architectural travel guides.
 - **Streaming & Industry Filtering**: Filter across **Netflix**, **Prime Video**, **ZEE5**, **SonyLIV**, **Hotstar**, **Apple TV+**, **MUBI**, and **Theaters**, as well as **Hollywood**, **Bollywood**, **Indian Regional**, and **International** cinema.
@@ -105,44 +105,45 @@ When starting from a blank history (**Cold Start**), the engine falls back clean
 
 ---
 
-## Catalog Coverage (220 Curated Items)
+## Catalog Coverage (1,156 Curated Items)
 
 ### 50 Years of Cinema (`1976–2026`)
 
-The movie catalog (`src/data/movies50Years.ts`) contains **120 films** distributed across six eras:
+The movie catalog (`src/data/movies50Years.ts` + `src/data/moviesExpanded.ts`) contains **539 unique films** distributed across six eras:
 
 | Era | Film Count | Representative Titles |
 | :--- | :---: | :--- |
-| **1970s (`1976–1979`)** | 10 | *Taxi Driver*, *Network*, *Star Wars*, *Amar Akbar Anthony*, *Don*, *Gol Maal*, *Alien*, *Apocalypse Now*, *Stalker* |
-| **1980s (`1980–1989`)** | 8 | *The Shining*, *Raiders of the Lost Ark*, *Blade Runner*, *The Thing*, *Paris, Texas*, *Mr. India*, *My Neighbor Totoro* |
-| **1990s (`1990–1999`)** | 10 | *Goodfellas*, *The Silence of the Lambs*, *Jurassic Park*, *Pulp Fiction*, *Heat*, *DDLJ*, *Satya*, *The Matrix* |
-| **2000s (`2000–2009`)** | 11 | *In the Mood for Love*, *Lagaan*, *Dil Chahta Hai*, *Spirited Away*, *Oldboy*, *Children of Men*, *The Dark Knight*, *Taken*, *3 Idiots* |
-| **2010s (`2010–2019`)** | 24 | *Inception*, *The Raid: Redemption*, *Gangs of Wasseypur*, *John Wick (1–3)*, *Whiplash*, *Drishyam*, *Arrival*, *Andhadhun*, *Tumbbad*, *Parasite* |
-| **2020s (`2020–2026`)** | 57 | *RRR*, *John Wick: Chapter 4*, *Dune: Part Two*, *Kill*, *Maharaja*, *Deadpool & Wolverine*, *Furiosa*, *The Wild Robot*, *Stree 2*, *Kalki 2898 AD*, *Aavesham*, *Manjummel Boys*, *Amar Singh Chamkila*, *F1*, *Sinners*, *Superman*, *Ballerina*, *Project Hail Mary*, *The Odyssey*, *Dune: Part Three* |
+| **1970s (`1976–1979`)** | 21 | *Taxi Driver*, *Network*, *Star Wars*, *Amar Akbar Anthony*, *Don*, *Gol Maal*, *Alien*, *Apocalypse Now*, *Stalker* |
+| **1980s (`1980–1989`)** | 28 | *The Shining*, *Raiders of the Lost Ark*, *Blade Runner*, *The Thing*, *Paris, Texas*, *Mr. India*, *My Neighbor Totoro* |
+| **1990s (`1990–1999`)** | 39 | *Goodfellas*, *The Silence of the Lambs*, *Jurassic Park*, *Pulp Fiction*, *Heat*, *DDLJ*, *Satya*, *The Matrix* |
+| **2000s (`2000–2009`)** | 71 | *In the Mood for Love*, *Lagaan*, *Dil Chahta Hai*, *Spirited Away*, *Oldboy*, *Children of Men*, *The Dark Knight*, *Taken*, *3 Idiots* |
+| **2010s (`2010–2019`)** | 161 | *Inception*, *The Raid: Redemption*, *Gangs of Wasseypur*, *John Wick (1–3)*, *Whiplash*, *Drishyam (Malayalam)*, *Arrival*, *Andhadhun*, *Tumbbad*, *Parasite* |
+| **2020s (`2020–2026`)** | 219 | *RRR*, *John Wick: Chapter 4*, *Dune: Part Two*, *Kill*, *Maharaja*, *Deadpool & Wolverine*, *Furiosa*, *The Wild Robot*, *Stree 2*, *Kalki 2898 AD*, *Aavesham*, *Manjummel Boys*, *Amar Singh Chamkila*, *F1*, *Sinners*, *Superman*, *Ballerina*, *Project Hail Mary*, *The Odyssey*, *Dune: Part Three* |
 
-> **Best in New (`2024–2026`)**: **43** current theatrical and OTT releases flagged with `isNew: true`, enriched with starring `cast`, `language`, `awards`/recognition, `platforms`, and unclipped synopsis details.
+> **Best in New (`2024–2026`)**: **126** current theatrical and OTT releases flagged with `isNew: true`, enriched with starring `cast`, `language`, `awards`/recognition, `platforms`, and unclipped synopsis details (`380` total films from `2010–2026`).
 
 ### All 10 Categories
 
 | # | Category | Items | Domain Focus |
 | :---: | :--- | :---: | :--- |
-| 1 | **Movies** | 120 | 50-year Hollywood, Bollywood, Indian Regional & International cinema (`1976–2026`) |
-| 2 | **Music** | 12 | Modal jazz, classic rock, French house, art rock, hip-hop, R&B, film scores & 2024–2025 albums |
-| 3 | **Food & Dining** | 12 | Artisanal ramen, Neapolitan pizza, Oaxacan mole, Sichuan mapo tofu, kaiseki, Nordic foraging & mezze |
-| 4 | **Books** | 12 | Speculative sci-fi, cyberpunk, literary mysteries, historical sagas & 2024 prize winners |
-| 5 | **TV Series** | 12 | Prestige crime, mystery thrillers, time-loop sci-fi & 2024–2025 limited series |
-| 6 | **Games** | 12 | Classic JRPGs, spatial puzzles, narrative RPGs, metroidvanias & 2024–2025 indie hits |
-| 7 | **Podcasts** | 10 | Architecture/design storytelling, song deconstructions, longform history & food science |
-| 8 | **Travel & Places** | 10 | Kyoto, Lisbon, Mexico City, Dolomites, Copenhagen, Naoshima, Oaxaca, Seoul, Iceland & Skye |
-| 9 | **Documentaries** | 10 | Visual essays, longitudinal sports, culinary mastery, mountaineering & 2024 award docs |
-| 10 | **Art & Design** | 10 | Dieter Rams, Saul Bass, Tadao Ando, Hiroshi Sugimoto, Isamu Noguchi & teamLab Borderless |
+| 1 | **Movies** | 539 | 50-year Hollywood, Bollywood, Indian Regional & International cinema (`1976–2026`) |
+| 2 | **Music** | 84 | Jazz, classic rock, electronic, hip-hop, R&B, classical, Bollywood OSTs & 2024–2025 albums |
+| 3 | **TV Series** | 82 | Prestige crime, mystery thrillers, time-loop sci-fi, anime & Indian OTT series (*Panchayat*, *Mirzapur*, *Scam 1992*, *The Family Man*) |
+| 4 | **Food & Dining** | 81 | Regional Indian classics (Hyderabadi biryani, masala dosa, chole bhature, litti chokha), ramen, Neapolitan pizza, mole, kaiseki & global street food |
+| 5 | **Books** | 80 | Speculative sci-fi, cyberpunk, literary fiction, Indian modern classics, philosophy, economics & recent prize winners |
+| 6 | **Games** | 70 | Soulslikes (*Elden Ring*, *Sekiro*), CRPGs (*Baldur's Gate 3*), narrative RPGs, metroidvanias, tactics & 2024–2025 indies (*Balatro*) |
+| 7 | **Podcasts** | 60 | Architecture/design storytelling, song deconstructions, narrative journalism, history, tech & Indian founder podcasts |
+| 8 | **Travel & Places** | 60 | Global cities, national parks, coastal retreats & Indian heritage destinations (Kyoto, Ladakh, Hampi, Goa, Udaipur, Iceland, Lisbon) |
+| 9 | **Documentaries** | 50 | Visual essays, nature cinema, sports, music, true crime, mountaineering & Indian non-fiction |
+| 10 | **Art & Design** | 50 | Architecture landmarks, industrial design, contemporary museums, typography & Indian modernist art/craft |
+| — | **Total** | **1,156** | Zero duplicate IDs or title+category collisions, paginated in 36-item browse slices |
 
 ### Streaming Platforms & Industries
 
 Movies include structured `industry` and `platforms` metadata for direct filtering:
 
-- **Industries**: `Hollywood` (66) · `Bollywood` (38) · `International` (9) · `Indian Regional` (7)
-- **Platforms**: `Prime Video` (80) · `Netflix` (56) · `Hotstar` (16) · `Theaters` (15) · `Apple TV+` (14) · `SonyLIV` (11) · `ZEE5` (10) · `MUBI` (7)
+- **Industries**: `Hollywood` (266) · `Bollywood` (179) · `Indian Regional` (49) · `International` (45)
+- **Platforms**: `Prime Video` (352) · `Netflix` (248) · `Hotstar` (101) · `Theaters` (62) · `Apple TV+` (56) · `MUBI` (56) · `ZEE5` (37) · `SonyLIV` (17)
 
 ---
 
@@ -194,20 +195,25 @@ Official posters, podcast cover art, culinary/travel photography, and scene stil
     ├── types/
     │   └── catalog.ts              # Shared interfaces (CatalogItem, UserTasteState, etc.)
     ├── data/
-    │   ├── movies50Years.ts        # 120-film 50-year cinema dataset (1976–2026)
-    │   └── categoriesCatalog.ts    # Metadata & 100 items across the other 9 categories
+    │   ├── movies50Years.ts                  # Base 120-film archive & merger (539 total films)
+    │   ├── moviesExpanded.ts                 # 419 additional global, Bollywood & regional films
+    │   ├── categoriesCatalog.ts              # Category metadata & merged 617 non-movie items
+    │   ├── categoriesExpandedMusicFood.ts    # Expanded music albums & global/Indian cuisine
+    │   ├── categoriesExpandedBooksSeries.ts  # Expanded literature & global/Indian TV series
+    │   ├── categoriesExpandedPodcastsGames.ts# Expanded podcasts & video games
+    │   └── categoriesExpandedTravelDocsDesign.ts # Expanded travel, documentaries & art/design
     ├── engine/
-    │   └── recommender.ts          # Scoring engine, breakdown analytics & sample profiles
+    │   └── recommender.ts                    # Scoring engine, searchWithRelated & sample profiles
     └── components/
-        ├── CategoriesView.tsx      # 10-category browser with search & new-release filter
-        ├── FeaturedMatchBanner.tsx # Full top-match detail panel & scene gallery on search
-        ├── HistoryProfileView.tsx  # Taste profile bars, persona switchers & activity log
-        ├── ItemCard.tsx            # Card with poster, metadata, explanation & actions
-        ├── ItemDetailModal.tsx     # Full synopsis, cast, awards, visuals & 10 related picks
-        ├── ItemGallery.tsx         # 4-photo Wikimedia Commons scenes/cast visual strip
-        ├── MoviesArchiveView.tsx   # 50-year movie explorer, 2010–2026 visual reel & OTT filters
-        ├── PosterThumb.tsx         # Cached poster image component with fallback card
-        └── TasteSetupModal.tsx     # Theme, category, tag & sample profile modal
+        ├── CategoriesView.tsx                # 10-category browser, search, Top Match & 36-item paging
+        ├── FeaturedMatchBanner.tsx           # Full top-match detail panel & scene gallery on search
+        ├── HistoryProfileView.tsx            # Taste profile bars, persona switchers & activity log
+        ├── ItemCard.tsx                      # Card with poster, metadata, explanation & actions
+        ├── ItemDetailModal.tsx               # Full synopsis, cast, awards, visuals & 10 related picks
+        ├── ItemGallery.tsx                   # 4-photo Wikimedia Commons scenes/cast visual strip
+        ├── MoviesArchiveView.tsx             # 50-year movie explorer, 2010–2026 visual reel & paging
+        ├── PosterThumb.tsx                   # Cached poster image component with fallback card
+        └── TasteSetupModal.tsx               # Theme, category, tag & sample profile modal
 ```
 
 ---
